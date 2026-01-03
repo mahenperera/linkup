@@ -9,7 +9,7 @@ namespace API.Data
         public async Task<Member?> GetMemberByIdAsync(string id)
         {
             return await context.Members.FindAsync(id);
-        }
+        }   
 
         public async Task<IReadOnlyList<Member>> GetMembersAsync()
         {
@@ -32,6 +32,13 @@ namespace API.Data
         public void Update(Member member)
         {
             context.Entry(member).State = EntityState.Modified;
+        }
+
+        public async Task<Member?> GetMemberForUpdate(string id)
+        {
+            return await context.Members
+                .Include(x => x.User)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }
