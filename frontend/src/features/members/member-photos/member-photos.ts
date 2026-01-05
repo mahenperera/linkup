@@ -1,17 +1,21 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MemberService } from '../../../core/services/member-service';
 import { ActivatedRoute } from '@angular/router';
-import { Photo } from '../../../types/member';
+import { Member, Photo } from '../../../types/member';
 import { ImageUpload } from '../../../shared/image-upload/image-upload';
+import { AccountService } from '../../../core/services/account-service';
+import { User } from '../../../types/user';
+import { StarButton } from "../../../shared/star-button/star-button";
 
 @Component({
   selector: 'app-member-photos',
-  imports: [ImageUpload],
+  imports: [ImageUpload, StarButton],
   templateUrl: './member-photos.html',
   styleUrl: './member-photos.css',
 })
 export class MemberPhotos implements OnInit {
   protected memberService = inject(MemberService);
+  private accountService = inject(AccountService);
   private route = inject(ActivatedRoute);
   protected photos = signal<Photo[]>([]);
   protected loading = signal(false);
@@ -28,15 +32,32 @@ export class MemberPhotos implements OnInit {
   onUploadImage(file: File) {
     this.loading.set(true);
     this.memberService.uploadPhoto(file).subscribe({
-      next: photo => {
+      next: (photo) => {
         this.memberService.editMode.set(false);
         this.loading.set(false);
-        this.photos.update(photos => [...photos, photo])
+        this.photos.update((photos) => [...photos, photo]);
       },
-      error: error => {
+      error: (error) => {
         console.log('Error uploading image: ', error);
         this.loading.set(false);
-      }
-    })
+      },
+    });
+  }
+
+  setMainPhoto(photo: Photo) {
+    this.memberService.setMainPhoto(photo).subscribe({
+      next: () => {
+        const currentUser = this.accountService.currentUser();
+        if (currentUser) currentUser.imageUrl = photo.url;
+        this.accountService.setCurrentUser(currentUser as User);
+        this.memberService.member.update(
+          (member) =>
+            ({
+              ...member,
+              imageUrl: photo.url,
+            } as Member)
+        );
+      },
+    });
   }
 }
