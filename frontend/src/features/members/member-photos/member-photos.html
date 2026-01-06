@@ -19,8 +19,8 @@
   </div>
   }
 </div>
-} } @else {
+} @else {
 <p class="text-center text-gray-500">No photos available</p>
-} } @else {
+} } } @else {
 <app-image-upload (uploadFile)="onUploadImage($event)" [loading]="loading()" />
 }
