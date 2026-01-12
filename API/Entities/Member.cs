@@ -16,6 +16,7 @@ namespace API.Entities
         public required string City { get; set; }
         public required string Country { get; set; }
 
+        // Navigation properties
         [JsonIgnore]
         public List<Photo> Photos { get; set; } = [];
 
@@ -24,6 +25,12 @@ namespace API.Entities
 
         [JsonIgnore]
         public List<MemberLike> LikedMembers { get; set; } = [];
+
+        [JsonIgnore]
+        public List<Message> MessagesSent { get; set; } = [];
+
+        [JsonIgnore]
+        public List<Message> MessagesReceived { get; set; } = [];
 
         [JsonIgnore]
         [ForeignKey(nameof(Id))]
