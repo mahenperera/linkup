@@ -7,7 +7,7 @@ import { User } from '../../types/user';
   providedIn: 'root',
 })
 export class AdminService {
-  baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
   getUsersWithRoles() {
