@@ -8,7 +8,6 @@ namespace API.Interfaces
         Task<Member?> GetMemberByIdAsync(string id);
         Task<PaginatedResult<Member>> GetMembersAsync(MemberParams memberParams);
         Task<IReadOnlyList<Photo>> GetPhotosForMembersAsync(string memberId);
-        Task<bool> SaveAllAsync();
         void Update(Member member);
         Task<Member?> GetMemberForUpdate(string id);
     }
