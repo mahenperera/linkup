@@ -86,6 +86,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/messages");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -94,6 +95,7 @@ try
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
+    await context.Connections.ExecuteDeleteAsync();
     await Seed.SeedUsers(userManager);
 }
 catch (Exception ex)
