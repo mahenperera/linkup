@@ -32,7 +32,8 @@ namespace API.Controllers
         [HttpGet("{id}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> GetMemberPhotos(string id)
         {
-            return Ok(await uow.MemberRepository.GetPhotosForMembersAsync(id));
+            var isCurrentUser = User.GetMemberId() == id;
+            return Ok(await uow.MemberRepository.GetPhotosForMemberAsync(id, isCurrentUser));
         }
 
         [HttpPut]
@@ -40,7 +41,7 @@ namespace API.Controllers
         {
             var memberId = User.GetMemberId();
 
-            var member = await uow.MemberRepository.GetMemberForUpdate(memberId);
+            var member = await uow.MemberRepository.GetMemberForUpdateAsync(memberId);
 
             if (member == null) return BadRequest("Could not get member");
 
@@ -61,7 +62,7 @@ namespace API.Controllers
         [HttpPost("add-photo")]
         public async Task<ActionResult<Photo>> AddPhoto([FromForm]IFormFile file)
         {
-            var member = await uow.MemberRepository.GetMemberForUpdate(User.GetMemberId());
+            var member = await uow.MemberRepository.GetMemberForUpdateAsync(User.GetMemberId());
 
             if (member == null) return BadRequest("Cannot update member");
 
@@ -76,12 +77,6 @@ namespace API.Controllers
                 MemberId = User.GetMemberId()
             };
 
-            if (member.ImageUrl == null)
-            {
-                member.ImageUrl = photo.Url;
-                member.User.ImageUrl = photo.Url;
-            }
-
             member.Photos.Add(photo);
 
             if (await uow.Complete()) return photo;
@@ -92,7 +87,7 @@ namespace API.Controllers
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
-            var member = await uow.MemberRepository.GetMemberForUpdate(User.GetMemberId());
+            var member = await uow.MemberRepository.GetMemberForUpdateAsync(User.GetMemberId());
 
             if (member == null) return BadRequest("Cannot get member from token");
 
@@ -114,7 +109,7 @@ namespace API.Controllers
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var member = await uow.MemberRepository.GetMemberForUpdate(User.GetMemberId());
+            var member = await uow.MemberRepository.GetMemberForUpdateAsync(User.GetMemberId());
 
             if (member == null) return BadRequest("Cannot get member from token");
 

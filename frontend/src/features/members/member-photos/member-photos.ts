@@ -65,6 +65,7 @@ export class MemberPhotos implements OnInit {
   }
 
   private setMainLocalPhoto(photo: Photo) {
+    if (!photo.isApproved) return;
     const currentUser = this.accountService.currentUser();
     if (currentUser) currentUser.imageUrl = photo.url;
     this.accountService.setCurrentUser(currentUser as User);
@@ -73,7 +74,7 @@ export class MemberPhotos implements OnInit {
         ({
           ...member,
           imageUrl: photo.url,
-        } as Member)
+        }) as Member,
     );
   }
 }
