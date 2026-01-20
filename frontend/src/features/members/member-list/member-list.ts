@@ -50,9 +50,7 @@ export class MemberList implements OnInit {
     this.modal.open();
   }
 
-  onClose() {
-    console.log('Modal closed');
-  }
+  onClose() {}
 
   onFilterChange(data: MemberParams) {
     this.memberParams = { ...data };
@@ -86,7 +84,7 @@ export class MemberList implements OnInit {
     }
 
     filters.push(
-      this.updatedParams.orderBy === 'lastActive' ? 'Recently active' : 'Newest members'
+      this.updatedParams.orderBy === 'lastActive' ? 'Recently active' : 'Newest members',
     );
 
     return filters.length > 0 ? `Selected: ${filters.join('  | ')}` : 'All members';

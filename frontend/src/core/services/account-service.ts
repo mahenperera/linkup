@@ -26,7 +26,7 @@ export class AccountService {
             this.setCurrentUser(user);
             this.startTokenRefreshInterval();
           }
-        })
+        }),
       );
   }
 
@@ -39,7 +39,7 @@ export class AccountService {
             this.setCurrentUser(user);
             this.startTokenRefreshInterval();
           }
-        })
+        }),
       );
   }
 
@@ -47,23 +47,26 @@ export class AccountService {
     return this.http.post<User>(
       this.baseUrl + 'account/refresh-token',
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   startTokenRefreshInterval() {
-    setInterval(() => {
-      this.http
-        .post<User>(this.baseUrl + 'account/refresh-token', {}, { withCredentials: true })
-        .subscribe({
-          next: (user) => {
-            this.currentUser.set(user);
-          },
-          error: () => {
-            this.logout();
-          },
-        });
-    }, 5 * 60 * 1000);
+    setInterval(
+      () => {
+        this.http
+          .post<User>(this.baseUrl + 'account/refresh-token', {}, { withCredentials: true })
+          .subscribe({
+            next: (user) => {
+              this.currentUser.set(user);
+            },
+            error: () => {
+              this.logout();
+            },
+          });
+      },
+      14 * 24 * 60 * 60 * 1000, // 14 days
+    );
   }
 
   setCurrentUser(user: User) {
