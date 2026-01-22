@@ -15,9 +15,11 @@ import { memberResolver } from '../features/members/member-resolver';
 import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes-guard';
 import { Admin } from '../features/admin/admin';
 import { adminGuard } from '../core/guards/admin-guard';
+import { LearnMore } from '../features/learn-more/learn-more';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  { path: 'learn-more', component: LearnMore },
   {
     path: '',
     runGuardsAndResolvers: 'always',
